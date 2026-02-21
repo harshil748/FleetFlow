@@ -3,6 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabaseClient";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 import { User } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,6 +21,7 @@ export default function Auth() {
 	const [regPassword, setRegPassword] = useState("");
 	const [regName, setRegName] = useState("");
 	const [regConfirm, setRegConfirm] = useState("");
+	const [regRole, setRegRole] = useState("dispatcher");
 	const [loading, setLoading] = useState(false);
 
 	const handleLogin = async (e: React.FormEvent) => {
@@ -43,11 +51,32 @@ export default function Auth() {
 			password: regPassword,
 			options: { data: { display_name: regName } },
 		});
-		setLoading(false);
+
 		if (error) {
+			setLoading(false);
 			toast.error(error.message);
-		} else if (data.session) {
-			// Email confirmation disabled — session created immediately
+			return;
+		}
+
+		// Create profile record with selected role
+		if (data.user) {
+			const { error: profileError } = await supabase.from("profiles").insert([
+				{
+					id: data.user.id,
+					full_name: regName,
+					email: regEmail,
+					role: regRole,
+				},
+			]);
+
+			if (profileError) {
+				console.error("Profile creation error:", profileError);
+			}
+		}
+
+		setLoading(false);
+		if (data.session) {
+			toast.success("Account created successfully!");
 			navigate("/dashboard");
 		} else {
 			toast.success("Account created! Please log in.");
@@ -117,6 +146,17 @@ export default function Auth() {
 						className='glass border-border/40 focus:neon-border'
 						required
 					/>
+					<Select value={regRole} onValueChange={setRegRole}>
+						<SelectTrigger className='glass border-border/40 focus:neon-border w-full'>
+							<SelectValue placeholder='Select Role' />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value='manager'>Fleet Manager</SelectItem>
+							<SelectItem value='dispatcher'>Dispatcher</SelectItem>
+							<SelectItem value='safety_officer'>Safety Officer</SelectItem>
+							<SelectItem value='analyst'>Financial Analyst</SelectItem>
+						</SelectContent>
+					</Select>
 					<Input
 						placeholder='Password'
 						type='password'

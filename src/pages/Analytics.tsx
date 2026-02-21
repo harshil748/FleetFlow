@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { IndianRupee, TrendingUp, Gauge } from "lucide-react";
+import { IndianRupee, TrendingUp, Gauge, Download } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
 	Table,
 	TableBody,
@@ -213,6 +214,54 @@ export default function Analytics() {
 		fetchChartData();
 	}, []);
 
+	const exportToCSV = () => {
+		if (financialsData.length === 0) {
+			alert("No data to export");
+			return;
+		}
+
+		// Create CSV content
+		const headers = [
+			"Month",
+			"Revenue (₹)",
+			"Fuel Cost (₹)",
+			"Maintenance (₹)",
+			"Net Profit (₹)",
+		];
+		const rows = financialsData.map((f) => [
+			f.month,
+			f.revenue,
+			f.fuelCost,
+			f.maintenance,
+			f.netProfit,
+		]);
+
+		const csvContent = [
+			headers.join(","),
+			...rows.map((row) => row.join(",")),
+			"",
+			"Summary Statistics",
+			`Total Fuel Cost,₹${stats.totalFuelCost}`,
+			`Total Maintenance Cost,₹${stats.totalMaintenanceCost}`,
+			`Fleet ROI,${stats.fleetROI}%`,
+			`Utilization Rate,${stats.utilizationRate}%`,
+		].join("\n");
+
+		// Create download link
+		const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+		const link = document.createElement("a");
+		const url = URL.createObjectURL(blob);
+		link.setAttribute("href", url);
+		link.setAttribute(
+			"download",
+			`fleet-analytics-${new Date().toISOString().split("T")[0]}.csv`,
+		);
+		link.style.visibility = "hidden";
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+	};
+
 	const kpis = [
 		{
 			label: "Total Fuel Cost",
@@ -300,10 +349,14 @@ export default function Analytics() {
 
 			{/* Financial Summary */}
 			<div className='glass rounded-xl neon-border overflow-hidden bg-card/30'>
-				<div className='p-4 border-b border-border/30'>
+				<div className='p-4 border-b border-border/30 flex justify-between items-center'>
 					<h3 className='text-sm font-semibold text-muted-foreground uppercase tracking-wider'>
 						Financial Summary
 					</h3>
+					<Button onClick={exportToCSV} size='sm' className='neon-button gap-2'>
+						<Download className='h-4 w-4' />
+						Export CSV
+					</Button>
 				</div>
 				<Table>
 					<TableHeader>

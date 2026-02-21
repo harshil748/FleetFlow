@@ -20,6 +20,7 @@ export default function Dashboard() {
 		activeFleet: 0,
 		maintenanceAlerts: 0,
 		pendingCargo: 0,
+		utilizationRate: 0,
 	});
 	const [trips, setTrips] = useState<any[]>([]);
 
@@ -52,10 +53,22 @@ export default function Dashboard() {
 				.select("*", { count: "exact", head: true })
 				.eq("status", "draft");
 
+			// 5. Calculate Utilization Rate (vehicles on trip / total available vehicles)
+			const { count: totalVehicles } = await supabase
+				.from("vehicles")
+				.select("*", { count: "exact", head: true })
+				.neq("status", "retired");
+
+			const utilization =
+				totalVehicles && totalVehicles > 0 ?
+					Math.round(((activeFleetCount || 0) / totalVehicles) * 100)
+				:	0;
+
 			setStats({
 				activeFleet: activeFleetCount || 0,
 				maintenanceAlerts: inShopCount || 0,
 				pendingCargo: pendingCount || 0,
+				utilizationRate: utilization,
 			});
 		};
 
@@ -89,6 +102,11 @@ export default function Dashboard() {
 			icon: AlertTriangle,
 		},
 		{ label: "Pending Trips", value: stats.pendingCargo, icon: Package },
+		{
+			label: "Utilization Rate",
+			value: `${stats.utilizationRate}%`,
+			icon: Truck,
+		},
 	];
 
 	return (
