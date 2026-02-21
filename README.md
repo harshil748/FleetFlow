@@ -4,25 +4,25 @@ A modular fleet and logistics management system built with React, Tailwind, and 
 
 ## Features
 
-- **Authentication** — Secure email/password login and registration via Supabase Auth
-- **Dashboard** — Real-time KPIs: active fleet, maintenance alerts, pending cargo
-- **Vehicle Registry** — Add, view, and manage the fleet with status tracking
-- **Trip Dispatcher** — Create and dispatch trips with vehicle, driver, and cargo details
-- **Maintenance Logs** — Track service records with issue type, date, and cost
-- **Trip & Expense** — Monitor trip costs and fuel expenses
-- **Performance** — Driver and vehicle performance metrics
-- **Analytics** — Visual charts and trend data across the fleet
+- **Authentication** - Secure email/password login and registration via Supabase Auth
+- **Dashboard** - Real-time KPIs: active fleet, maintenance alerts, pending cargo
+- **Vehicle Registry** - Add, view, and manage the fleet with status tracking
+- **Trip Dispatcher** - Create and dispatch trips with vehicle, driver, and cargo details
+- **Maintenance Logs** - Track service records with issue type, date, and cost
+- **Trip & Expense** - Monitor trip costs and fuel expenses
+- **Performance** - Driver and vehicle performance metrics
+- **Analytics** - Visual charts and trend data across the fleet
 
 ## Tech Stack
 
 - [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/) — build tooling
-- [Tailwind CSS](https://tailwindcss.com/) — utility-first styling
-- [shadcn/ui](https://ui.shadcn.com/) — accessible component library built on Radix UI
-- [Supabase](https://supabase.com/) — backend-as-a-service (auth + database)
-- [React Router v6](https://reactrouter.com/) — client-side routing
-- [TanStack Query](https://tanstack.com/query) — async data management
-- [Recharts](https://recharts.org/) — charting library
+- [Vite](https://vitejs.dev/) - build tooling
+- [Tailwind CSS](https://tailwindcss.com/) - utility-first styling
+- [shadcn/ui](https://ui.shadcn.com/) - accessible component library built on Radix UI
+- [Supabase](https://supabase.com/) - backend-as-a-service (auth + database)
+- [React Router v6](https://reactrouter.com/) - client-side routing
+- [TanStack Query](https://tanstack.com/query) - async data management
+- [Recharts](https://recharts.org/) - charting library
 
 ## Getting Started
 
