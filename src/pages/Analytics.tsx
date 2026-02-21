@@ -64,11 +64,11 @@ export default function Analytics() {
   useEffect(() => {
     const fetchChartData = async () => {
       // Fuel liters by month
-      const { data: fuelLogs } = await supabase.from('fuel_logs').select('date, liters');
+      const { data: fuelLogs } = await supabase.from('fuel_logs').select('created_at, liters');
       if (fuelLogs) {
         const byMonth: Record<string, { total: number; count: number }> = {};
         fuelLogs.forEach(log => {
-          const month = new Date(log.date).toLocaleString('default', { month: 'short', year: '2-digit' });
+          const month = new Date(log.created_at).toLocaleString('default', { month: 'short', year: '2-digit' });
           if (!byMonth[month]) byMonth[month] = { total: 0, count: 0 };
           byMonth[month].total += Number(log.liters);
           byMonth[month].count += 1;
@@ -97,24 +97,24 @@ export default function Analytics() {
       }
 
       // Financial summary by month
-      const { data: tripData } = await supabase.from('trips').select('started_at, revenue').eq('status', 'completed');
-      const { data: fuelData } = await supabase.from('fuel_logs').select('date, cost');
-      const { data: maintData } = await supabase.from('maintenance_logs').select('date, cost');
+      const { data: tripData } = await supabase.from('trips').select('created_at, revenue').eq('status', 'completed');
+      const { data: fuelData } = await supabase.from('fuel_logs').select('created_at, cost');
+      const { data: maintData } = await supabase.from('maintenance_logs').select('created_at, cost');
       const months: Record<string, { revenue: number; fuelCost: number; maintenance: number }> = {};
       const toMonth = (s: string) => new Date(s).toLocaleString('default', { month: 'short', year: '2-digit' });
       tripData?.forEach(t => {
-        if (!t.started_at) return;
-        const m = toMonth(t.started_at);
+        if (!t.created_at) return;
+        const m = toMonth(t.created_at);
         if (!months[m]) months[m] = { revenue: 0, fuelCost: 0, maintenance: 0 };
         months[m].revenue += Number(t.revenue || 0);
       });
       fuelData?.forEach(f => {
-        const m = toMonth(f.date);
+        const m = toMonth(f.created_at);
         if (!months[m]) months[m] = { revenue: 0, fuelCost: 0, maintenance: 0 };
         months[m].fuelCost += Number(f.cost);
       });
       maintData?.forEach(r => {
-        const m = toMonth(r.date);
+        const m = toMonth(r.created_at);
         if (!months[m]) months[m] = { revenue: 0, fuelCost: 0, maintenance: 0 };
         months[m].maintenance += Number(r.cost);
       });

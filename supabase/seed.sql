@@ -1,0 +1,57 @@
+-- ==========================================
+-- FleetFlow Demo Seed Data
+-- Run this in Supabase SQL Editor AFTER running the migration schema.
+-- ==========================================
+
+-- VEHICLES
+INSERT INTO public.vehicles (id, name_model, license_plate, max_load_capacity, odometer, status, type, acquisition_cost) VALUES
+  ('11111111-0000-0000-0000-000000000001', 'Tata Prima 4928.S', 'GJ01AB1234', 15000, 84200, 'available', 'truck', 2800000),
+  ('11111111-0000-0000-0000-000000000002', 'Ashok Leyland Boss 1616', 'GJ01CD5678', 12000, 62000, 'on_trip',  'truck', 2200000),
+  ('11111111-0000-0000-0000-000000000003', 'Mahindra Bolero Pickup', 'GJ05EF9012', 1500,  31000, 'available', 'van',   850000),
+  ('11111111-0000-0000-0000-000000000004', 'Eicher Pro 3015', 'GJ05GH3456', 7500,  51500, 'in_shop',  'truck', 1600000),
+  ('11111111-0000-0000-0000-000000000005', 'Force Traveller Cargo', 'GJ07IJ7890', 2500,  18900, 'available', 'van',   950000),
+  ('11111111-0000-0000-0000-000000000006', 'Hero Xoom 110 Delivery', 'GJ07KL2345', 100,   8200,  'available', 'bike',  120000);
+
+-- DRIVERS
+INSERT INTO public.drivers (id, full_name, license_number, license_expiry, allowed_vehicle_types, status, safety_score) VALUES
+  ('22222222-0000-0000-0000-000000000001', 'Ramesh Patel',   'DL-0120110012340', '2027-06-15', '{truck,van}', 'on_duty',  98),
+  ('22222222-0000-0000-0000-000000000002', 'Suresh Mehta',   'DL-0120120045678', '2026-11-30', '{truck}',      'on_trip',  91),
+  ('22222222-0000-0000-0000-000000000003', 'Nilesh Shah',    'DL-0420130067890', '2025-03-10', '{van}',        'off_duty', 85),
+  ('22222222-0000-0000-0000-000000000004', 'Priya Desai',    'DL-0320140089012', '2028-09-22', '{truck,van,bike}', 'on_duty', 100),
+  ('22222222-0000-0000-0000-000000000005', 'Deepak Trivedi', 'DL-0220150012356', '2026-04-05', '{bike,van}',   'on_duty',  94),
+  ('22222222-0000-0000-0000-000000000006', 'Ankit Joshi',    'DL-0520160034567', '2027-12-18', '{truck,van}',  'suspended',78);
+
+-- TRIPS (use 'completed' so analytics charts populate)
+INSERT INTO public.trips (id, vehicle_id, driver_id, status, cargo_weight, revenue, start_odometer, end_odometer, created_at, completed_at) VALUES
+  ('33333333-0000-0000-0000-000000000001', '11111111-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000001', 'completed', 8000, 45000, 84000, 84350, NOW() - INTERVAL '60 days', NOW() - INTERVAL '59 days'),
+  ('33333333-0000-0000-0000-000000000002', '11111111-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000001', 'completed', 12000, 62000, 84350, 84750, NOW() - INTERVAL '50 days', NOW() - INTERVAL '49 days'),
+  ('33333333-0000-0000-0000-000000000003', '11111111-0000-0000-0000-000000000002', '22222222-0000-0000-0000-000000000002', 'completed', 9500, 51000, 61500, 61890, NOW() - INTERVAL '45 days', NOW() - INTERVAL '44 days'),
+  ('33333333-0000-0000-0000-000000000004', '11111111-0000-0000-0000-000000000003', '22222222-0000-0000-0000-000000000004', 'completed', 1000, 18000, 30700, 30920, NOW() - INTERVAL '40 days', NOW() - INTERVAL '40 days'),
+  ('33333333-0000-0000-0000-000000000005', '11111111-0000-0000-0000-000000000005', '22222222-0000-0000-0000-000000000005', 'completed', 2000, 22000, 18600, 18850, NOW() - INTERVAL '30 days', NOW() - INTERVAL '30 days'),
+  ('33333333-0000-0000-0000-000000000006', '11111111-0000-0000-0000-000000000001', '22222222-0000-0000-0000-000000000001', 'completed', 7500, 39000, 84750, 85100, NOW() - INTERVAL '20 days', NOW() - INTERVAL '20 days'),
+  ('33333333-0000-0000-0000-000000000007', '11111111-0000-0000-0000-000000000003', '22222222-0000-0000-0000-000000000004', 'completed', 1200, 21000, 30920, 31100, NOW() - INTERVAL '10 days', NOW() - INTERVAL '10 days'),
+  ('33333333-0000-0000-0000-000000000008', '11111111-0000-0000-0000-000000000002', '22222222-0000-0000-0000-000000000002', 'dispatched', 10000, 58000, 61890, NULL, NOW() - INTERVAL '1 day', NULL);
+
+-- MAINTENANCE LOGS (spread over past months for chart variety)
+INSERT INTO public.maintenance_logs (vehicle_id, description, cost, created_at) VALUES
+  ('11111111-0000-0000-0000-000000000001', 'Engine oil change + filter replacement', 4500, NOW() - INTERVAL '55 days'),
+  ('11111111-0000-0000-0000-000000000002', 'Brake pad replacement (front axle)', 8200, NOW() - INTERVAL '48 days'),
+  ('11111111-0000-0000-0000-000000000004', 'Transmission overhaul', 38000, NOW() - INTERVAL '35 days'),
+  ('11111111-0000-0000-0000-000000000003', 'Tyre replacement (set of 4)', 14000, NOW() - INTERVAL '28 days'),
+  ('11111111-0000-0000-0000-000000000001', 'AC compressor repair', 12500, NOW() - INTERVAL '22 days'),
+  ('11111111-0000-0000-0000-000000000005', 'Battery replacement', 6800, NOW() - INTERVAL '15 days'),
+  ('11111111-0000-0000-0000-000000000002', 'Clutch plate replacement', 9500, NOW() - INTERVAL '8 days'),
+  ('11111111-0000-0000-0000-000000000006', 'Chain lubrication + brake adjustment', 800, NOW() - INTERVAL '3 days');
+
+-- FUEL LOGS (spread over past months)
+INSERT INTO public.fuel_logs (vehicle_id, trip_id, liters, cost, created_at) VALUES
+  ('11111111-0000-0000-0000-000000000001', '33333333-0000-0000-0000-000000000001', 120, 12960, NOW() - INTERVAL '60 days'),
+  ('11111111-0000-0000-0000-000000000002', '33333333-0000-0000-0000-000000000003', 95,  10260, NOW() - INTERVAL '45 days'),
+  ('11111111-0000-0000-0000-000000000001', '33333333-0000-0000-0000-000000000002', 140, 15120, NOW() - INTERVAL '50 days'),
+  ('11111111-0000-0000-0000-000000000003', '33333333-0000-0000-0000-000000000004', 40,  4320,  NOW() - INTERVAL '40 days'),
+  ('11111111-0000-0000-0000-000000000005', '33333333-0000-0000-0000-000000000005', 55,  5940,  NOW() - INTERVAL '30 days'),
+  ('11111111-0000-0000-0000-000000000001', '33333333-0000-0000-0000-000000000006', 115, 12420, NOW() - INTERVAL '20 days'),
+  ('11111111-0000-0000-0000-000000000004', NULL,                                   80,  8640,  NOW() - INTERVAL '12 days'),
+  ('11111111-0000-0000-0000-000000000003', '33333333-0000-0000-0000-000000000007', 38,  4104,  NOW() - INTERVAL '10 days'),
+  ('11111111-0000-0000-0000-000000000002', '33333333-0000-0000-0000-000000000008', 100, 10800, NOW() - INTERVAL '1 day'),
+  ('11111111-0000-0000-0000-000000000006', NULL,                                   8,   864,   NOW() - INTERVAL '2 days');
