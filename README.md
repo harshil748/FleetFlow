@@ -1,73 +1,83 @@
-# Welcome to your Lovable project
+﻿# FleetFlow
 
-## Project info
+A modular fleet and logistics management system built with React, Tailwind, and Supabase.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- **Authentication** — Secure email/password login and registration via Supabase Auth
+- **Dashboard** — Real-time KPIs: active fleet, maintenance alerts, pending cargo
+- **Vehicle Registry** — Add, view, and manage the fleet with status tracking
+- **Trip Dispatcher** — Create and dispatch trips with vehicle, driver, and cargo details
+- **Maintenance Logs** — Track service records with issue type, date, and cost
+- **Trip & Expense** — Monitor trip costs and fuel expenses
+- **Performance** — Driver and vehicle performance metrics
+- **Analytics** — Visual charts and trend data across the fleet
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vitejs.dev/) — build tooling
+- [Tailwind CSS](https://tailwindcss.com/) — utility-first styling
+- [shadcn/ui](https://ui.shadcn.com/) — accessible component library built on Radix UI
+- [Supabase](https://supabase.com/) — backend-as-a-service (auth + database)
+- [React Router v6](https://reactrouter.com/) — client-side routing
+- [TanStack Query](https://tanstack.com/query) — async data management
+- [Recharts](https://recharts.org/) — charting library
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js >= 18
+- A Supabase project (create one free at https://supabase.com)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# 1. Clone the repository
 git clone <YOUR_GIT_URL>
+cd FleetFlow1
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# 2. Install dependencies
+npm install
 
-# Step 3: Install the necessary dependencies.
-npm i
+# 3. Configure environment variables
+# Fill in VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in .env
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# 4. Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Create a `.env` file at the project root:
 
-**Use GitHub Codespaces**
+```
+VITE_SUPABASE_URL=https://<your-project-id>.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-public-key>
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Build
 
-## What technologies are used for this project?
+```bash
+npm run build      # production build -> dist/
+npm run preview    # preview the production build locally
+```
 
-This project is built with:
+## Project Structure
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```
+src/
+ components/            # Shared layout and UI components
+    ui/                # shadcn/ui primitive components
+ hooks/                 # Custom React hooks
+ lib/
+    supabaseClient.ts  # Supabase client initialisation
+    utils.ts           # Utility helpers
+ pages/                 # Route-level page components
+ data/                  # Static/mock data
+```
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+MIT

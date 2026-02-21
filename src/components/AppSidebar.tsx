@@ -1,6 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { LayoutDashboard, Truck, MapPin, Wrench, Receipt, Users, BarChart3, LogOut } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
 import {
   Sidebar,
   SidebarContent,

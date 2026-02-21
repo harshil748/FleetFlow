@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const navigate = useNavigate();
