@@ -70,7 +70,8 @@ export default function Trips() {
         vehicle_id: selectedVehicle,
         driver_id: selectedDriver,
         cargo_weight: Number(cargoWeight),
-        status: 'dispatched'
+        status: 'dispatched',
+        dispatcher_id: null
       }
     ]);
 
