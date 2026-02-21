@@ -22,11 +22,12 @@ import {
 	SlidersHorizontal,
 	Layers,
 	Search,
-	UserPlus,
 	AlertTriangle,
+	ExternalLink,
 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 type Driver = {
 	id: string;
@@ -106,9 +107,9 @@ function CompletionBar({ rate }: { rate: number }) {
 }
 
 export default function Performance() {
+	const navigate = useNavigate();
 	const [drivers, setDrivers] = useState<Driver[]>([]);
 	const [loading, setLoading] = useState(true);
-	const [showForm, setShowForm] = useState(false);
 	const [showControls, setShowControls] = useState(false);
 
 	// Controls
@@ -116,12 +117,6 @@ export default function Performance() {
 	const [filterStatus, setFilterStatus] = useState("all");
 	const [sortBy, setSortBy] = useState("safety_score_desc");
 	const [groupBy, setGroupBy] = useState("none");
-
-	// Add Driver form
-	const [name, setName] = useState("");
-	const [license, setLicense] = useState("");
-	const [expiry, setExpiry] = useState("");
-	const [vtype, setVtype] = useState("truck");
 
 	const fetchAll = async () => {
 		setLoading(true);
@@ -163,32 +158,6 @@ export default function Performance() {
 	useEffect(() => {
 		fetchAll();
 	}, []);
-
-	const handleSave = async () => {
-		if (!name || !license || !expiry) {
-			toast.error("Fill all fields");
-			return;
-		}
-		const { error } = await supabase.from("drivers").insert([
-			{
-				full_name: name,
-				license_number: license,
-				license_expiry: expiry,
-				allowed_vehicle_types: [vtype],
-				status: "on_duty",
-			},
-		]);
-		if (error) {
-			toast.error("Error: " + error.message);
-			return;
-		}
-		toast.success("Driver added!");
-		setShowForm(false);
-		setName("");
-		setLicense("");
-		setExpiry("");
-		fetchAll();
-	};
 
 	const filtered = useMemo(() => {
 		let rows = [...drivers];
@@ -256,7 +225,7 @@ export default function Performance() {
 				<div className='flex items-center gap-2'>
 					<Shield className='w-5 h-5 text-primary' />
 					<h2 className='text-lg font-semibold'>
-						Driver Performance &amp; Safety Profiles
+						Driver Performance &amp; Safety Analytics
 					</h2>
 					<span className='text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full'>
 						{drivers.length} drivers
@@ -266,15 +235,16 @@ export default function Performance() {
 					<Button
 						variant='outline'
 						size='sm'
+						className='gap-1.5 border-primary/50 text-primary hover:bg-primary/10'
+						onClick={() => navigate("/drivers")}>
+						<ExternalLink className='w-3.5 h-3.5' /> Manage Drivers
+					</Button>
+					<Button
+						variant='outline'
+						size='sm'
 						className='gap-1.5 border-border/50'
 						onClick={() => setShowControls((v) => !v)}>
 						<SlidersHorizontal className='w-3.5 h-3.5' /> Filters &amp; Sort
-					</Button>
-					<Button
-						className='neon-button gap-1.5'
-						size='sm'
-						onClick={() => setShowForm((v) => !v)}>
-						<UserPlus className='w-3.5 h-3.5' /> Add Driver
 					</Button>
 				</div>
 			</div>
@@ -348,188 +318,131 @@ export default function Performance() {
 				</div>
 			)}
 
-			<div className='flex gap-4'>
-				{/* Add Driver Panel */}
-				{showForm && (
-					<div className='w-72 shrink-0 glass rounded-xl border border-border/40 p-5 space-y-3 self-start'>
-						<h3 className='font-semibold text-sm'>New Driver</h3>
-						<Input
-							placeholder='Full Name'
-							value={name}
-							onChange={(e) => setName(e.target.value)}
-							className='glass border-border/40 h-8 text-sm'
-						/>
-						<Input
-							placeholder='License # e.g. DL-0120110012340'
-							value={license}
-							onChange={(e) => setLicense(e.target.value)}
-							className='glass border-border/40 h-8 text-sm'
-						/>
-						<div className='space-y-1'>
-							<label className='text-xs text-muted-foreground'>
-								License Expiry
-							</label>
-							<Input
-								type='date'
-								value={expiry}
-								onChange={(e) => setExpiry(e.target.value)}
-								className='glass border-border/40 h-8 text-sm'
-							/>
-						</div>
-						<Select value={vtype} onValueChange={setVtype}>
-							<SelectTrigger className='glass border-border/40 h-8 text-sm'>
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent className='bg-popover border-border text-popover-foreground'>
-								<SelectItem value='truck'>Truck</SelectItem>
-								<SelectItem value='van'>Van</SelectItem>
-								<SelectItem value='bike'>Bike</SelectItem>
-							</SelectContent>
-						</Select>
-						<div className='flex gap-2 pt-1'>
-							<Button
-								size='sm'
-								className='flex-1 neon-button'
-								onClick={handleSave}>
-								Save
-							</Button>
-							<Button
-								size='sm'
-								variant='ghost'
-								className='flex-1'
-								onClick={() => setShowForm(false)}>
-								Cancel
-							</Button>
-						</div>
-					</div>
-				)}
-
-				{/* Table */}
-				<div className='flex-1 space-y-3'>
-					<div className='relative'>
-						<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground' />
-						<Input
-							placeholder='Search by name or license #...'
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							className='glass border-border/40 pl-8 h-8 text-sm'
-						/>
-					</div>
-
-					{loading ?
-						<div className='glass rounded-xl border border-border/40 py-16 text-center text-muted-foreground text-sm'>
-							Loading driver profiles...
-						</div>
-					:	Object.entries(grouped).map(([groupLabel, rows]) => (
-							<div
-								key={groupLabel}
-								className='glass rounded-xl border border-border/40 overflow-hidden'>
-								{groupBy !== "none" && (
-									<div className='px-4 py-2 bg-muted/20 border-b border-border/30 text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2'>
-										<Layers className='w-3 h-3' />
-										{groupLabel}
-										<span className='ml-auto normal-case font-normal'>
-											{rows.length} driver{rows.length !== 1 ? "s" : ""}
-										</span>
-									</div>
-								)}
-								<Table>
-									<TableHeader>
-										<TableRow className='border-border/30 hover:bg-transparent'>
-											<TableHead className='text-muted-foreground text-xs'>
-												Driver
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs'>
-												License #
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs'>
-												Vehicle Types
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs'>
-												Expiry
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs'>
-												Completion Rate
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs text-center'>
-												Safety Score
-											</TableHead>
-											<TableHead className='text-muted-foreground text-xs text-center'>
-												Status
-											</TableHead>
-										</TableRow>
-									</TableHeader>
-									<TableBody>
-										{rows.length === 0 ?
-											<TableRow>
-												<TableCell
-													colSpan={7}
-													className='text-center py-10 text-muted-foreground text-sm'>
-													No drivers match the current filters.
-												</TableCell>
-											</TableRow>
-										:	rows.map((d) => {
-												const days = expiryDaysLeft(d.license_expiry);
-												const expiredClass =
-													days <= 0 ? "text-red-400 font-bold"
-													: days <= 90 ? "text-orange-400 font-semibold"
-													: "";
-												return (
-													<TableRow
-														key={d.id}
-														className='border-border/20 hover:bg-white/[0.02] transition-colors'>
-														<TableCell className='font-medium text-sm'>
-															{d.full_name}
-														</TableCell>
-														<TableCell className='font-mono text-xs text-muted-foreground'>
-															{d.license_number}
-														</TableCell>
-														<TableCell>
-															<div className='flex flex-wrap gap-1'>
-																{(d.allowed_vehicle_types || []).map((t) => (
-																	<span
-																		key={t}
-																		className='text-xs bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded'>
-																		{t}
-																	</span>
-																))}
-															</div>
-														</TableCell>
-														<TableCell className={`text-sm ${expiredClass}`}>
-															{d.license_expiry}
-															{days <= 90 && days > 0 && (
-																<span className='ml-1 text-xs opacity-70'>
-																	({days}d)
-																</span>
-															)}
-															{days <= 0 && (
-																<span className='ml-1 text-xs'> EXPIRED</span>
-															)}
-														</TableCell>
-														<TableCell>
-															<div className='space-y-0.5'>
-																<CompletionBar rate={d.completionRate} />
-																<div className='text-xs text-muted-foreground'>
-																	{d.completedTrips}/{d.totalTrips} trips
-																</div>
-															</div>
-														</TableCell>
-														<TableCell className='text-center'>
-															<ScoreBadge score={Number(d.safety_score)} />
-														</TableCell>
-														<TableCell className='text-center'>
-															<StatusBadge status={d.status} />
-														</TableCell>
-													</TableRow>
-												);
-											})
-										}
-									</TableBody>
-								</Table>
-							</div>
-						))
-					}
+			{/* Search and Table */}
+			<div className='space-y-3'>
+				<div className='relative'>
+					<Search className='absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground' />
+					<Input
+						placeholder='Search by name or license #...'
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						className='glass border-border/40 pl-8 h-8 text-sm'
+					/>
 				</div>
+
+				{loading ?
+					<div className='glass rounded-xl border border-border/40 py-16 text-center text-muted-foreground text-sm'>
+						Loading driver profiles...
+					</div>
+				:	Object.entries(grouped).map(([groupLabel, rows]) => (
+						<div
+							key={groupLabel}
+							className='glass rounded-xl border border-border/40 overflow-hidden'>
+							{groupBy !== "none" && (
+								<div className='px-4 py-2 bg-muted/20 border-b border-border/30 text-xs font-semibold text-muted-foreground uppercase tracking-wide flex items-center gap-2'>
+									<Layers className='w-3 h-3' />
+									{groupLabel}
+									<span className='ml-auto normal-case font-normal'>
+										{rows.length} driver{rows.length !== 1 ? "s" : ""}
+									</span>
+								</div>
+							)}
+							<Table>
+								<TableHeader>
+									<TableRow className='border-border/30 hover:bg-transparent'>
+										<TableHead className='text-muted-foreground text-xs'>
+											Driver
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs'>
+											License #
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs'>
+											Vehicle Types
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs'>
+											Expiry
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs'>
+											Completion Rate
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs text-center'>
+											Safety Score
+										</TableHead>
+										<TableHead className='text-muted-foreground text-xs text-center'>
+											Status
+										</TableHead>
+									</TableRow>
+								</TableHeader>
+								<TableBody>
+									{rows.length === 0 ?
+										<TableRow>
+											<TableCell
+												colSpan={7}
+												className='text-center py-10 text-muted-foreground text-sm'>
+												No drivers match the current filters.
+											</TableCell>
+										</TableRow>
+									:	rows.map((d) => {
+											const days = expiryDaysLeft(d.license_expiry);
+											const expiredClass =
+												days <= 0 ? "text-red-400 font-bold"
+												: days <= 90 ? "text-orange-400 font-semibold"
+												: "";
+											return (
+												<TableRow
+													key={d.id}
+													className='border-border/20 hover:bg-white/[0.02] transition-colors'>
+													<TableCell className='font-medium text-sm'>
+														{d.full_name}
+													</TableCell>
+													<TableCell className='font-mono text-xs text-muted-foreground'>
+														{d.license_number}
+													</TableCell>
+													<TableCell>
+														<div className='flex flex-wrap gap-1'>
+															{(d.allowed_vehicle_types || []).map((t) => (
+																<span
+																	key={t}
+																	className='text-xs bg-primary/10 text-primary border border-primary/20 px-1.5 py-0.5 rounded'>
+																	{t}
+																</span>
+															))}
+														</div>
+													</TableCell>
+													<TableCell className={`text-sm ${expiredClass}`}>
+														{d.license_expiry}
+														{days <= 90 && days > 0 && (
+															<span className='ml-1 text-xs opacity-70'>
+																({days}d)
+															</span>
+														)}
+														{days <= 0 && (
+															<span className='ml-1 text-xs'> EXPIRED</span>
+														)}
+													</TableCell>
+													<TableCell>
+														<div className='space-y-0.5'>
+															<CompletionBar rate={d.completionRate} />
+															<div className='text-xs text-muted-foreground'>
+																{d.completedTrips}/{d.totalTrips} trips
+															</div>
+														</div>
+													</TableCell>
+													<TableCell className='text-center'>
+														<ScoreBadge score={Number(d.safety_score)} />
+													</TableCell>
+													<TableCell className='text-center'>
+														<StatusBadge status={d.status} />
+													</TableCell>
+												</TableRow>
+											);
+										})
+									}
+								</TableBody>
+							</Table>
+						</div>
+					))
+				}
 			</div>
 		</div>
 	);
