@@ -1,9 +1,12 @@
-# 🚚 FleetFlow  
+# 🚚 FleetFlow
+
 ### Modular Fleet & Logistics Management System
 
 > Replace manual logbooks with a centralized, intelligent, rule-based digital hub.
 
 FleetFlow is a modern fleet & logistics management platform designed to optimize vehicle lifecycle, streamline dispatch operations, improve driver safety, and provide deep financial insights.
+
+**🌐 Live Demo:** [https://fleet-flow-pi.vercel.app/](https://fleet-flow-pi.vercel.app/)
 
 ---
 
@@ -14,108 +17,154 @@ Managing fleets manually leads to inefficiencies, compliance risks, and hidden o
 ✅ Real-time fleet visibility  
 ✅ Automated validation & safety checks  
 ✅ Smart asset & driver state management  
-✅ Financial and performance analytics  
+✅ Financial and performance analytics
 
 ---
 
 ## 🧩 Core Capabilities
 
-### 🔐 Authentication & RBAC
-- Secure email/password login via Supabase Auth  
-- Role-Based Access Control (Fleet Manager, Dispatcher, Safety Officer, Financial Analyst)
+### 🔐 Authentication & Security
+
+- Secure email/password authentication via Supabase Auth
+- Protected routes with automatic session management
+- Real-time session validation
 
 ### 📊 Command Center (Dashboard)
+
 At-a-glance operational intelligence:
 
-- **Active Fleet** – Vehicles currently on trip  
-- **Maintenance Alerts** – Vehicles in service  
-- **Utilization Rate** – Assigned vs idle assets  
-- **Pending Cargo** – Unassigned shipments  
-
-Filters by:
-- Vehicle Type (Truck / Van / Bike)  
-- Status  
-- Region  
+- **Active Fleet** – Vehicles currently on trip
+- **Maintenance Alerts** – Vehicles in service (in_shop status)
+- **Pending Cargo** – Unassigned shipments (draft trips)
+- **Recent Trips** – Latest 5 trip activities with vehicle and driver details
+- **Real-time Updates** – Live data synchronization via Supabase subscriptions
 
 ### 🚐 Vehicle Registry
-Manage physical assets:
 
-- Model / Identifier  
-- License Plate (Unique)  
-- Load Capacity  
-- Odometer  
-- Status Tracking  
-- Out-of-Service Toggle  
+Comprehensive vehicle asset management:
+
+- **Add/View Vehicles** – Create new vehicle entries
+- **Vehicle Details** – Model/name, license plate (unique), type (truck/van/bike)
+- **Capacity Tracking** – Max payload capacity
+- **Odometer Management** – Current mileage tracking
+- **Status Management** – Available, On Trip, In Shop, Unavailable
+- **Glass Morphism UI** – Modern, clean interface
+
+### 👥 Driver Registry
+
+Full driver lifecycle management with CRUD operations:
+
+- **Add New Drivers** – Register drivers with complete profile
+- **Edit Driver Info** – Update driver details (license number locked after creation)
+- **Delete/Suspend** – Remove or temporarily suspend drivers
+- **License Management** – License number, expiry date, vehicle type certifications
+- **Multi-Vehicle Certification** – Assign multiple allowed vehicle types (truck/van/bike)
+- **Status Tracking** – On Duty, Off Duty, On Trip, Suspended
+- **Compliance Alerts** – Warning banner for licenses expiring within 90 days
+- **Search & Filter** – Quick search by name or license number, filter by status
+- **Safety Scores** – View driver safety ratings
 
 ### 🗺️ Trip Dispatcher
-Efficient trip creation & lifecycle:
 
-- Assign Vehicle + Driver  
-- Cargo Weight Validation  
+Efficient trip creation & lifecycle management:
 
-Status Flow:
+- **Quick Dispatch** – Assign vehicle + driver with cargo weight
+- **Payload Validation** – Prevents overweight cargo assignments
+- **Driver Compliance** – Blocks assignment if license expired
+- **Vehicle Availability** – Only shows available/on-trip vehicles
 
+**Trip Status Flow:**  
 Draft → Dispatched → Completed → Cancelled
 
-🛑 Prevents invalid trips (overload, unavailable vehicle, expired license)
+- **Complete Trips** – Record end odometer reading
+- **Automatic Status Updates** – Vehicle and driver status sync
+- **Real-time Trip Table** – View all trips with vehicle/driver details
 
 ### 🛠️ Maintenance & Service Logs
-- Preventative & reactive maintenance tracking  
-- Automatic **“In Shop”** status update  
-- Vehicles removed from dispatcher selection pool  
 
-### ⛽ Fuel & Expense Logging
-Track operational costs:
+Comprehensive maintenance tracking:
 
-- Fuel (Liters, Cost, Date)  
-- Maintenance Costs  
+- **Service Records** – Log maintenance type, cost, and details
+- **Automatic Status Sync** – Sets vehicle to "In Shop" during maintenance
+- **Service History** – Complete maintenance timeline per vehicle
+- **Cost Tracking** – Maintenance expense monitoring
+- **Availability Control** – In-shop vehicles excluded from dispatch
 
-Auto-calculations:
+### ⛽ Trip & Expense Management
 
-- Total Operational Cost  
-- Cost per Vehicle  
-- Cost per km  
+Track all operational costs:
 
-### 👨‍✈️ Driver Performance & Safety
-- License Expiry Tracking  
-- Duty Status (On Duty / Off Duty / Suspended)  
-- Safety Scores  
-- Trip Completion Rates  
+- **Fuel Logging** – Record liters, cost, and date per vehicle
+- **Expense Tracking** – Comprehensive fuel cost monitoring
+- **Per-Vehicle Analysis** – Cost breakdown by vehicle
+- **Timeline View** – Chronological expense logs with vehicle details
 
-🚫 Blocks assignment if driver is non-compliant
+### 📈 Driver Performance & Safety Analytics
 
-### 📈 Operational Analytics
-Data-driven decisions:
+Read-only performance monitoring dashboard:
 
-- Fuel Efficiency (km/L)  
-- Vehicle ROI  
+- **Safety Score Visualization** – Color-coded badges (95+ Excellent, 85-94 Good, <85 Needs Improvement)
+- **Trip Completion Rates** – Visual progress bars with percentage
+- **Completion Metrics** – Completed trips vs total trips per driver
+- **License Expiry Tracking** – 90-day warning system with day countdown
+- **Advanced Filtering** – Filter by status (on_duty, on_trip, off_duty, suspended)
+- **Multi-Sort Options** – Sort by safety score, completion rate, expiry date, or name
+- **Intelligent Grouping** – Group by:
+  - Driver Status
+  - Vehicle Type Certification
+  - Performance Score Band (Excellent/Good/Needs Improvement)
+- **Analytics Focus** – Pure performance monitoring, no data editing
+- **Quick Access** – "Manage Drivers" button links directly to Driver Registry
 
-Formula:
+### 📊 Operational Analytics
 
-ROI = (Revenue − (Fuel + Maintenance)) / Acquisition Cost
+Data-driven decision making:
 
-Exports:
+- **Financial Overview** – Total fuel costs, maintenance costs, ROI calculations
+- **Fleet Utilization** – Active vehicles vs total fleet percentage
+- **Fuel Efficiency Charts** – Monthly trend analysis with line graphs
+- **Cost Analysis** – Costliest vehicles breakdown with bar charts
+- **Revenue vs Expenses** – Profit margin visualization
+- **Interactive Graphs** – Hover details powered by Recharts
 
-- CSV  
-- PDF  
+**ROI Formula:**
+
+```
+ROI = (Revenue − (Fuel + Maintenance)) / Acquisition Cost × 100%
+```
 
 ---
 
 ## ⚙️ Tech Stack
 
-Frontend  
-- React 18 + TypeScript  
-- Vite  
+**Frontend**
 
-Styling  
-- Tailwind CSS  
+- React 18 + TypeScript
+- Vite
+- React Router v6
 
-UI Components  
-- shadcn/ui  
+**Styling**
 
-Backend & Database  
-- Supabase  
-- Supabase Postgres  
+- Tailwind CSS
+- Custom Glass Morphism UI
+
+**UI Components**
+
+- shadcn/ui
+- Lucide React Icons
+- Recharts (Analytics Visualization)
+- Sonner (Toast Notifications)
+
+**Backend & Database**
+
+- Supabase Auth
+- Supabase Postgres
+- Real-time Subscriptions
+
+**Deployment**
+
+- Vercel
+- Automatic CI/CD
 
 ---
 
@@ -124,8 +173,8 @@ Backend & Database
 Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/fleetflow.git
-cd fleetflow
+git clone https://github.com/harshil748/FleetFlow1.git
+cd FleetFlow1
 ```
 
 Install Dependencies
@@ -154,80 +203,115 @@ npm run dev
 
 Core relational entities:
 
-- vehicles  
-- drivers  
-- trips  
-- maintenance_logs  
-- fuel_logs  
-- expenses  
+- **vehicles** – Fleet assets with status tracking
+- **drivers** – Driver profiles with compliance data
+- **trips** – Trip records with vehicle and driver assignments
+- **maintenance_logs** – Service history per vehicle
+- **fuel_logs** – Fuel consumption and costs
 
-Relationships:
+**Relationships:**
 
-Vehicle → Trips → Expenses  
-Driver → Trips  
-Vehicle → Maintenance Logs  
+```
+Vehicle → Trips → Driver
+Vehicle → Maintenance Logs
+Vehicle → Fuel Logs
+Driver → Trips
+```
 
 ---
 
 ## 🔁 System Workflow
 
-1. Add Vehicle → Status: Available  
-2. Add Driver → Compliance Check  
-3. Create Trip → Validation Rules  
-4. Dispatch → Status Updates  
-5. Complete Trip → Odometer Update  
-6. Log Fuel / Expenses  
-7. Analytics Auto-Refresh  
+1. **Register Vehicle** → Status: Available
+2. **Register Driver** → Compliance Check (License expiry, vehicle types)
+3. **Create Trip** → Validation Rules (payload, driver status, vehicle availability)
+4. **Dispatch** → Status Updates (Vehicle: on_trip, Driver: on_trip)
+5. **Complete Trip** → Odometer Update, Status Reset
+6. **Log Expenses** → Fuel/Maintenance tracking
+7. **View Analytics** → Auto-refresh with real-time data
 
 ---
 
 ## 🎯 Design Principles
 
-✔ Modular UI  
-✔ Scannable data tables  
-✔ Real-time state synchronization  
-✔ Rule-based validations  
-✔ Clean status indicators  
+✔ **Modular UI** – Clean separation of concerns across pages  
+✔ **Scannable Tables** – Quick data parsing with status indicators  
+✔ **Real-time Sync** – Instant updates via Supabase subscriptions  
+✔ **Rule-based Validation** – Prevent invalid operations before they happen  
+✔ **Glass Morphism** – Modern, professional aesthetic
 
 ---
 
-## 📂 Suggested Folder Structure
+## 📂 Project Structure
 
-src/  
- ├── components/  
- ├── pages/  
- ├── hooks/  
- ├── services/  
- ├── types/  
- ├── utils/  
- └── App.tsx  
+```
+src/
+ ├── components/          # Reusable UI components
+ │   ├── ui/             # shadcn/ui components
+ │   ├── AppSidebar.tsx  # Navigation sidebar
+ │   ├── DashboardLayout.tsx
+ │   ├── ProtectedRoute.tsx
+ │   ├── StatusPill.tsx
+ │   └── Toolbar.tsx
+ ├── pages/              # Route pages
+ │   ├── Auth.tsx        # Login/Signup
+ │   ├── Dashboard.tsx   # Command center
+ │   ├── Vehicles.tsx    # Vehicle registry
+ │   ├── Drivers.tsx     # Driver registry (CRUD)
+ │   ├── Trips.tsx       # Trip dispatcher
+ │   ├── Maintenance.tsx # Maintenance logs
+ │   ├── Expenses.tsx    # Fuel & expenses
+ │   ├── Performance.tsx # Driver analytics
+ │   └── Analytics.tsx   # Operational analytics
+ ├── hooks/              # Custom React hooks
+ ├── lib/                # Utilities
+ │   ├── supabaseClient.ts
+ │   └── utils.ts
+ ├── integrations/       # Third-party integrations
+ └── App.tsx             # Main app component
+```
 
 ---
 
 ## 🛣️ Roadmap
 
-- [ ] Live GPS Tracking  
-- [ ] Predictive Maintenance (AI)  
-- [ ] Driver Behavior Monitoring  
-- [ ] Multi-fleet Support  
-- [ ] Mobile App  
+- [ ] Live GPS Tracking
+- [ ] Predictive Maintenance (AI/ML)
+- [ ] Driver Behavior Monitoring
+- [ ] Multi-fleet Support
+- [ ] Mobile App (React Native)
+- [ ] Export Reports (CSV/PDF)
+- [ ] Role-Based Access Control (RBAC)
+- [ ] Push Notifications
 
 ---
 
 ## 🤝 Contributing
 
-Workflow:
+Contributions are welcome! Please follow this workflow:
 
-fork → branch → commit → pull request 🚀
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
 ---
 
 ## 📄 License
 
-MIT License © FleetFlow
+MIT License © 2026 FleetFlow
 
 ---
 
 ## 💡 Vision
 
 FleetFlow aims to become the **operating system for logistics fleets** — combining operations, safety, and finance into one intelligent platform.
+
+---
+
+## 📧 Contact
+
+**Developer:** Harshil Patel  
+**Repository:** [github.com/harshil748/FleetFlow1](https://github.com/harshil748/FleetFlow1)  
+**Live Demo:** [fleet-flow-pi.vercel.app](https://fleet-flow-pi.vercel.app/)
