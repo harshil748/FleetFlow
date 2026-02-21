@@ -1,6 +1,5 @@
-import { Search, SlidersHorizontal, Filter, ArrowUpDown } from "lucide-react";
+import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 interface ToolbarProps {
   searchPlaceholder?: string;
@@ -14,15 +13,6 @@ export default function Toolbar({ searchPlaceholder = "Search...", actions }: To
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input placeholder={searchPlaceholder} className="pl-9 glass border-border/40 focus:neon-border" />
       </div>
-      <Button variant="outline" size="sm" className="glass border-border/40 text-muted-foreground hover:text-foreground">
-        <SlidersHorizontal className="h-4 w-4 mr-1" /> Group By
-      </Button>
-      <Button variant="outline" size="sm" className="glass border-border/40 text-muted-foreground hover:text-foreground">
-        <Filter className="h-4 w-4 mr-1" /> Filter
-      </Button>
-      <Button variant="outline" size="sm" className="glass border-border/40 text-muted-foreground hover:text-foreground">
-        <ArrowUpDown className="h-4 w-4 mr-1" /> Sort
-      </Button>
       {actions && <div className="flex gap-2 ml-auto">{actions}</div>}
     </div>
   );

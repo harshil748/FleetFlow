@@ -35,16 +35,19 @@ export default function Auth() {
       return;
     }
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: regEmail,
       password: regPassword,
-      options: { data: { display_name: regName }, emailRedirectTo: window.location.origin },
+      options: { data: { display_name: regName } },
     });
     setLoading(false);
     if (error) {
       toast.error(error.message);
+    } else if (data.session) {
+      // Email confirmation disabled — session created immediately
+      navigate("/dashboard");
     } else {
-      toast.success("Check your email to confirm your account!");
+      toast.success("Account created! Please log in.");
     }
   };
 
