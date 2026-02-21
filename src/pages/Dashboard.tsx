@@ -49,6 +49,15 @@ export default function Dashboard() {
     };
 
     fetchDashboardData();
+
+    // Realtime: re-fetch stats whenever vehicles or trips change
+    const channel = supabase
+      .channel('dashboard-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, () => fetchDashboardData())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'trips' }, () => fetchDashboardData())
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   const kpis = [
