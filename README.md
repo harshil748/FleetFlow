@@ -1,83 +1,233 @@
-﻿# FleetFlow
+# 🚚 FleetFlow  
+### Modular Fleet & Logistics Management System
 
-A modular fleet and logistics management system built with React, Tailwind, and Supabase.
+> Replace manual logbooks with a centralized, intelligent, rule-based digital hub.
 
-## Features
+FleetFlow is a modern fleet & logistics management platform designed to optimize vehicle lifecycle, streamline dispatch operations, improve driver safety, and provide deep financial insights.
 
-- **Authentication** - Secure email/password login and registration via Supabase Auth
-- **Dashboard** - Real-time KPIs: active fleet, maintenance alerts, pending cargo
-- **Vehicle Registry** - Add, view, and manage the fleet with status tracking
-- **Trip Dispatcher** - Create and dispatch trips with vehicle, driver, and cargo details
-- **Maintenance Logs** - Track service records with issue type, date, and cost
-- **Trip & Expense** - Monitor trip costs and fuel expenses
-- **Performance** - Driver and vehicle performance metrics
-- **Analytics** - Visual charts and trend data across the fleet
+---
 
-## Tech Stack
+## ✨ Why FleetFlow?
 
-- [React 18](https://react.dev/) + [TypeScript](https://www.typescriptlang.org/)
-- [Vite](https://vitejs.dev/) - build tooling
-- [Tailwind CSS](https://tailwindcss.com/) - utility-first styling
-- [shadcn/ui](https://ui.shadcn.com/) - accessible component library built on Radix UI
-- [Supabase](https://supabase.com/) - backend-as-a-service (auth + database)
-- [React Router v6](https://reactrouter.com/) - client-side routing
-- [TanStack Query](https://tanstack.com/query) - async data management
-- [Recharts](https://recharts.org/) - charting library
+Managing fleets manually leads to inefficiencies, compliance risks, and hidden operational costs. FleetFlow provides:
 
-## Getting Started
+✅ Real-time fleet visibility  
+✅ Automated validation & safety checks  
+✅ Smart asset & driver state management  
+✅ Financial and performance analytics  
 
-### Prerequisites
+---
 
-- Node.js >= 18
-- A Supabase project (create one free at https://supabase.com)
+## 🧩 Core Capabilities
 
-### Setup
+### 🔐 Authentication & RBAC
+- Secure email/password login via Supabase Auth  
+- Role-Based Access Control (Fleet Manager, Dispatcher, Safety Officer, Financial Analyst)
+
+### 📊 Command Center (Dashboard)
+At-a-glance operational intelligence:
+
+- **Active Fleet** – Vehicles currently on trip  
+- **Maintenance Alerts** – Vehicles in service  
+- **Utilization Rate** – Assigned vs idle assets  
+- **Pending Cargo** – Unassigned shipments  
+
+Filters by:
+- Vehicle Type (Truck / Van / Bike)  
+- Status  
+- Region  
+
+### 🚐 Vehicle Registry
+Manage physical assets:
+
+- Model / Identifier  
+- License Plate (Unique)  
+- Load Capacity  
+- Odometer  
+- Status Tracking  
+- Out-of-Service Toggle  
+
+### 🗺️ Trip Dispatcher
+Efficient trip creation & lifecycle:
+
+- Assign Vehicle + Driver  
+- Cargo Weight Validation  
+
+Status Flow:
+
+Draft → Dispatched → Completed → Cancelled
+
+🛑 Prevents invalid trips (overload, unavailable vehicle, expired license)
+
+### 🛠️ Maintenance & Service Logs
+- Preventative & reactive maintenance tracking  
+- Automatic **“In Shop”** status update  
+- Vehicles removed from dispatcher selection pool  
+
+### ⛽ Fuel & Expense Logging
+Track operational costs:
+
+- Fuel (Liters, Cost, Date)  
+- Maintenance Costs  
+
+Auto-calculations:
+
+- Total Operational Cost  
+- Cost per Vehicle  
+- Cost per km  
+
+### 👨‍✈️ Driver Performance & Safety
+- License Expiry Tracking  
+- Duty Status (On Duty / Off Duty / Suspended)  
+- Safety Scores  
+- Trip Completion Rates  
+
+🚫 Blocks assignment if driver is non-compliant
+
+### 📈 Operational Analytics
+Data-driven decisions:
+
+- Fuel Efficiency (km/L)  
+- Vehicle ROI  
+
+Formula:
+
+ROI = (Revenue − (Fuel + Maintenance)) / Acquisition Cost
+
+Exports:
+
+- CSV  
+- PDF  
+
+---
+
+## ⚙️ Tech Stack
+
+Frontend  
+- React 18 + TypeScript  
+- Vite  
+
+Styling  
+- Tailwind CSS  
+
+UI Components  
+- shadcn/ui  
+
+Backend & Database  
+- Supabase  
+- Supabase Postgres  
+
+---
+
+## 🚀 Getting Started
+
+Clone Repository
 
 ```bash
-# 1. Clone the repository
-git clone <YOUR_GIT_URL>
-cd FleetFlow1
+git clone https://github.com/yourusername/fleetflow.git
+cd fleetflow
+```
 
-# 2. Install dependencies
+Install Dependencies
+
+```bash
 npm install
+```
 
-# 3. Configure environment variables
-# Fill in VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY in .env
+Environment Variables  
+Create `.env` file:
 
-# 4. Start the development server
+```env
+VITE_SUPABASE_URL=your_project_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
+```
+
+Run Development Server
+
+```bash
 npm run dev
 ```
 
-### Environment Variables
+---
 
-Create a `.env` file at the project root:
+## 🗄️ Database Overview
 
-```
-VITE_SUPABASE_URL=https://<your-project-id>.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=<your-anon-public-key>
-```
+Core relational entities:
 
-### Build
+- vehicles  
+- drivers  
+- trips  
+- maintenance_logs  
+- fuel_logs  
+- expenses  
 
-```bash
-npm run build      # production build -> dist/
-npm run preview    # preview the production build locally
-```
+Relationships:
 
-## Project Structure
+Vehicle → Trips → Expenses  
+Driver → Trips  
+Vehicle → Maintenance Logs  
 
-```
-src/
- components/            # Shared layout and UI components
-    ui/                # shadcn/ui primitive components
- hooks/                 # Custom React hooks
- lib/
-    supabaseClient.ts  # Supabase client initialisation
-    utils.ts           # Utility helpers
- pages/                 # Route-level page components
- data/                  # Static/mock data
-```
+---
 
-## License
+## 🔁 System Workflow
 
-MIT
+1. Add Vehicle → Status: Available  
+2. Add Driver → Compliance Check  
+3. Create Trip → Validation Rules  
+4. Dispatch → Status Updates  
+5. Complete Trip → Odometer Update  
+6. Log Fuel / Expenses  
+7. Analytics Auto-Refresh  
+
+---
+
+## 🎯 Design Principles
+
+✔ Modular UI  
+✔ Scannable data tables  
+✔ Real-time state synchronization  
+✔ Rule-based validations  
+✔ Clean status indicators  
+
+---
+
+## 📂 Suggested Folder Structure
+
+src/  
+ ├── components/  
+ ├── pages/  
+ ├── hooks/  
+ ├── services/  
+ ├── types/  
+ ├── utils/  
+ └── App.tsx  
+
+---
+
+## 🛣️ Roadmap
+
+- [ ] Live GPS Tracking  
+- [ ] Predictive Maintenance (AI)  
+- [ ] Driver Behavior Monitoring  
+- [ ] Multi-fleet Support  
+- [ ] Mobile App  
+
+---
+
+## 🤝 Contributing
+
+Workflow:
+
+fork → branch → commit → pull request 🚀
+
+---
+
+## 📄 License
+
+MIT License © FleetFlow
+
+---
+
+## 💡 Vision
+
+FleetFlow aims to become the **operating system for logistics fleets** — combining operations, safety, and finance into one intelligent platform.
