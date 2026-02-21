@@ -1,7 +1,15 @@
 -- ==========================================
 -- FleetFlow Demo Seed Data
 -- Run this in Supabase SQL Editor AFTER running the migration schema.
+-- Safe to re-run: truncates existing demo data first.
 -- ==========================================
+
+-- Clear existing data (FK-safe order)
+TRUNCATE public.fuel_logs      RESTART IDENTITY CASCADE;
+TRUNCATE public.maintenance_logs RESTART IDENTITY CASCADE;
+TRUNCATE public.trips          RESTART IDENTITY CASCADE;
+TRUNCATE public.drivers        RESTART IDENTITY CASCADE;
+TRUNCATE public.vehicles       RESTART IDENTITY CASCADE;
 
 -- VEHICLES
 INSERT INTO public.vehicles (id, name_model, license_plate, max_load_capacity, odometer, status, type, acquisition_cost) VALUES

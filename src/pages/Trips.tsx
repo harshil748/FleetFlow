@@ -36,12 +36,20 @@ export default function Trips() {
       setTrips(tripsData || []);
     }
 
-    // Fetch Available Vehicles
-    const { data: vehicleData } = await supabase.from('vehicles').select('*').eq('status', 'available');
-    if (vehicleData) setVehicles(vehicleData);
+// Fetch Available Vehicles — show all active (not retired/in_shop) so selector is never empty
+  const { data: vehicleData } = await supabase
+    .from('vehicles')
+    .select('*')
+    .in('status', ['available', 'on_trip'])
+    .order('license_plate');
+  if (vehicleData) setVehicles(vehicleData);
 
-    // Fetch On Duty Drivers
-    const { data: driverData } = await supabase.from('drivers').select('*').eq('status', 'on_duty');
+  // Fetch On Duty + On Trip Drivers (on_trip means currently assigned but re-dispatch allowed for demo)
+  const { data: driverData } = await supabase
+    .from('drivers')
+    .select('*')
+    .in('status', ['on_duty', 'on_trip'])
+    .order('full_name');
     if (driverData) setDrivers(driverData);
 
     setLoading(false);
@@ -145,16 +153,31 @@ export default function Trips() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Select value={selectedVehicle} onValueChange={setSelectedVehicle}>
-            <SelectTrigger className="glass border-border/40 focus:neon-border"><SelectValue placeholder="Select Available Vehicle" /></SelectTrigger>
-            <SelectContent>
-              {vehicles.map((v) => <SelectItem key={v.id} value={v.id}>{v.license_plate} (Max: {v.max_load_capacity})</SelectItem>)}
+            <SelectTrigger className="glass border-border/40"><SelectValue placeholder="Select Vehicle" /></SelectTrigger>
+            <SelectContent position="popper" className="z-50 bg-popover border border-border text-popover-foreground shadow-lg">
+              {vehicles.length === 0
+                ? <SelectItem value="__none" disabled>No vehicles found — run seed data</SelectItem>
+                : vehicles.map((v) => (
+                    <SelectItem key={v.id} value={v.id}>
+                      {v.license_plate} · {v.type} · max {v.max_load_capacity} kg
+                      {v.status !== 'available' && <span className="ml-2 text-amber-400 text-xs">({v.status})</span>}
+                    </SelectItem>
+                  ))
+              }
             </SelectContent>
           </Select>
 
           <Select value={selectedDriver} onValueChange={setSelectedDriver}>
-            <SelectTrigger className="glass border-border/40 focus:neon-border"><SelectValue placeholder="Select On-Duty Driver" /></SelectTrigger>
-            <SelectContent>
-              {drivers.map((d) => <SelectItem key={d.id} value={d.id}>{d.full_name}</SelectItem>)}
+            <SelectTrigger className="glass border-border/40"><SelectValue placeholder="Select Driver" /></SelectTrigger>
+            <SelectContent position="popper" className="z-50 bg-popover border border-border text-popover-foreground shadow-lg">
+              {drivers.length === 0
+                ? <SelectItem value="__none" disabled>No drivers found — run seed data</SelectItem>
+                : drivers.map((d) => (
+                    <SelectItem key={d.id} value={d.id}>
+                      {d.full_name} · score {d.safety_score}
+                    </SelectItem>
+                  ))
+              }
             </SelectContent>
           </Select>
 
