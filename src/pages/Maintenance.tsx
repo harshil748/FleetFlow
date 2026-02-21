@@ -86,7 +86,7 @@ export default function Maintenance() {
           />
           <Input
             type="number"
-            placeholder="Cost Est ($)"
+            placeholder="Cost Est (₹)"
             value={cost} onChange={(e) => setCost(e.target.value)}
             className="glass border-border/40 focus:neon-border"
           />

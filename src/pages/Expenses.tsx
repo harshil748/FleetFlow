@@ -83,7 +83,7 @@ export default function Expenses() {
           />
           <Input
             type="number"
-            placeholder="Total Cost ($)"
+            placeholder="Total Cost (₹)"
             value={cost} onChange={(e) => setCost(e.target.value)}
             className="glass border-border/40 focus:neon-border"
           />
