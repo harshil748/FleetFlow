@@ -1,16 +1,31 @@
 -- ==========================================
 -- FleetFlow: Modular Fleet & Logistics Schema
+-- Idempotent: safe to run multiple times.
 -- ==========================================
 
--- 1. ENUMS (Roles and Statuses)
-CREATE TYPE public.user_role AS ENUM ('manager', 'dispatcher', 'safety_officer', 'analyst');
-CREATE TYPE public.vehicle_status AS ENUM ('available', 'on_trip', 'in_shop', 'retired');
-CREATE TYPE public.vehicle_type AS ENUM ('truck', 'van', 'bike');
-CREATE TYPE public.driver_status AS ENUM ('on_duty', 'off_duty', 'suspended', 'on_trip');
-CREATE TYPE public.trip_status AS ENUM ('draft', 'dispatched', 'completed', 'cancelled');
+-- 1. ENUMS (skip if already exist)
+DO $$ BEGIN
+  CREATE TYPE public.user_role AS ENUM ('manager', 'dispatcher', 'safety_officer', 'analyst');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE public.vehicle_status AS ENUM ('available', 'on_trip', 'in_shop', 'retired');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE public.vehicle_type AS ENUM ('truck', 'van', 'bike');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE public.driver_status AS ENUM ('on_duty', 'off_duty', 'suspended', 'on_trip');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
+
+DO $$ BEGIN
+  CREATE TYPE public.trip_status AS ENUM ('draft', 'dispatched', 'completed', 'cancelled');
+EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 -- 2. PROFILES (Extends Supabase Auth Users)
-CREATE TABLE public.profiles (
+CREATE TABLE IF NOT EXISTS public.profiles (
     id UUID REFERENCES auth.users(id) ON DELETE CASCADE PRIMARY KEY,
     full_name TEXT NOT NULL,
     email TEXT UNIQUE NOT NULL,
@@ -19,7 +34,7 @@ CREATE TABLE public.profiles (
 );
 
 -- 3. VEHICLES (Asset Management)
-CREATE TABLE public.vehicles (
+CREATE TABLE IF NOT EXISTS public.vehicles (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name_model TEXT NOT NULL,
     license_plate TEXT UNIQUE NOT NULL,
@@ -32,7 +47,7 @@ CREATE TABLE public.vehicles (
 );
 
 -- 4. DRIVERS (Human Resources & Compliance)
-CREATE TABLE public.drivers (
+CREATE TABLE IF NOT EXISTS public.drivers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name TEXT NOT NULL,
     license_number TEXT UNIQUE NOT NULL,
@@ -44,7 +59,7 @@ CREATE TABLE public.drivers (
 );
 
 -- 5. TRIPS (Trip Dispatcher & Management)
-CREATE TABLE public.trips (
+CREATE TABLE IF NOT EXISTS public.trips (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID REFERENCES public.vehicles(id) ON DELETE RESTRICT NOT NULL,
     driver_id UUID REFERENCES public.drivers(id) ON DELETE RESTRICT NOT NULL,
@@ -59,7 +74,7 @@ CREATE TABLE public.trips (
 );
 
 -- 6. MAINTENANCE LOGS (Health Tracking)
-CREATE TABLE public.maintenance_logs (
+CREATE TABLE IF NOT EXISTS public.maintenance_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID REFERENCES public.vehicles(id) ON DELETE CASCADE NOT NULL,
     description TEXT NOT NULL,
@@ -69,7 +84,7 @@ CREATE TABLE public.maintenance_logs (
 );
 
 -- 7. FUEL LOGS (Expense & Fuel Tracking)
-CREATE TABLE public.fuel_logs (
+CREATE TABLE IF NOT EXISTS public.fuel_logs (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID REFERENCES public.vehicles(id) ON DELETE CASCADE NOT NULL,
     trip_id UUID REFERENCES public.trips(id) ON DELETE CASCADE,
@@ -118,6 +133,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SET search_path = public;
 
+DROP TRIGGER IF EXISTS validate_trip_dispatch_trigger ON public.trips;
 CREATE TRIGGER validate_trip_dispatch_trigger
 BEFORE INSERT OR UPDATE ON public.trips
 FOR EACH ROW EXECUTE FUNCTION public.validate_trip_dispatch();
@@ -152,6 +168,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SET search_path = public;
 
+DROP TRIGGER IF EXISTS handle_trip_status_change_trigger ON public.trips;
 CREATE TRIGGER handle_trip_status_change_trigger
 BEFORE UPDATE ON public.trips
 FOR EACH ROW EXECUTE FUNCTION public.handle_trip_status_change();
@@ -168,6 +185,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SET search_path = public;
 
+DROP TRIGGER IF EXISTS set_vehicle_in_shop_trigger ON public.maintenance_logs;
 CREATE TRIGGER set_vehicle_in_shop_trigger
 AFTER INSERT ON public.maintenance_logs
 FOR EACH ROW EXECUTE FUNCTION public.set_vehicle_in_shop();
@@ -183,7 +201,15 @@ ALTER TABLE public.trips ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.maintenance_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.fuel_logs ENABLE ROW LEVEL SECURITY;
 
--- Allow authenticated users to view everything (read-only globally)
+-- Drop existing policies before recreating (idempotent)
+DO $$ DECLARE tbl text; BEGIN
+  FOR tbl IN SELECT unnest(ARRAY['profiles','vehicles','drivers','trips','maintenance_logs','fuel_logs']) LOOP
+    EXECUTE format('DROP POLICY IF EXISTS "Allow read access to authenticated users" ON public.%I', tbl);
+    EXECUTE format('DROP POLICY IF EXISTS "Allow ALL for authenticated" ON public.%I', tbl);
+  END LOOP;
+END $$;
+
+-- Allow authenticated users to view everything
 CREATE POLICY "Allow read access to authenticated users" ON public.profiles FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Allow read access to authenticated users" ON public.vehicles FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Allow read access to authenticated users" ON public.drivers FOR SELECT TO authenticated USING (true);
@@ -191,8 +217,7 @@ CREATE POLICY "Allow read access to authenticated users" ON public.trips FOR SEL
 CREATE POLICY "Allow read access to authenticated users" ON public.maintenance_logs FOR SELECT TO authenticated USING (true);
 CREATE POLICY "Allow read access to authenticated users" ON public.fuel_logs FOR SELECT TO authenticated USING (true);
 
--- Provide wide ALL access for authenticated users for demo purposes
--- (In a real app, you would restrict INSERT/UPDATE/DELETE based on `auth.uid()` and user roles)
+-- Wide ALL access for demo
 CREATE POLICY "Allow ALL for authenticated" ON public.profiles FOR ALL TO authenticated USING (true);
 CREATE POLICY "Allow ALL for authenticated" ON public.vehicles FOR ALL TO authenticated USING (true);
 CREATE POLICY "Allow ALL for authenticated" ON public.drivers FOR ALL TO authenticated USING (true);

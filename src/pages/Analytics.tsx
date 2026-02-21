@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { DollarSign, TrendingUp, Gauge } from "lucide-react";
+import { IndianRupee, TrendingUp, Gauge } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { supabase } from "@/lib/supabaseClient";
@@ -133,7 +133,7 @@ export default function Analytics() {
   }, []);
 
   const kpis = [
-    { label: "Total Fuel Cost", value: `$${stats.totalFuelCost.toLocaleString()}`, icon: DollarSign },
+    { label: "Total Fuel Cost", value: `₹${stats.totalFuelCost.toLocaleString('en-IN')}`, icon: IndianRupee },
     { label: "Fleet ROI", value: `${stats.fleetROI}%`, icon: TrendingUp },
     { label: "Utilization Rate", value: `${stats.utilizationRate}%`, icon: Gauge },
   ];
@@ -198,10 +198,10 @@ export default function Analytics() {
             {financialsData.map((f) => (
               <TableRow key={f.month} className="border-border/20 table-row-hover transition-colors">
                 <TableCell className="font-medium">{f.month}</TableCell>
-                <TableCell className="text-right text-green-400">${f.revenue.toLocaleString()}</TableCell>
-                <TableCell className="text-right text-red-400">${f.fuelCost.toLocaleString()}</TableCell>
-                <TableCell className="text-right text-yellow-400">${f.maintenance.toLocaleString()}</TableCell>
-                <TableCell className="text-right font-bold neon-text">${f.netProfit.toLocaleString()}</TableCell>
+                <TableCell className="text-right text-green-400">₹{f.revenue.toLocaleString('en-IN')}</TableCell>
+                <TableCell className="text-right text-red-400">₹{f.fuelCost.toLocaleString('en-IN')}</TableCell>
+                <TableCell className="text-right text-yellow-400">₹{f.maintenance.toLocaleString('en-IN')}</TableCell>
+                <TableCell className="text-right font-bold neon-text">₹{f.netProfit.toLocaleString('en-IN')}</TableCell>
               </TableRow>
             ))}
           </TableBody>

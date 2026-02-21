@@ -125,7 +125,7 @@ export default function Expenses() {
                     <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium">{log.vehicles?.license_plate}</TableCell>
                     <TableCell>{Number(log.liters).toLocaleString()} L</TableCell>
-                    <TableCell className="text-emerald-400 font-semibold">${Number(log.cost).toLocaleString(undefined, { minimumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="text-emerald-400 font-semibold">₹{Number(log.cost).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</TableCell>
                     <TableCell>{new Date(log.created_at).toLocaleDateString()}</TableCell>
                   </TableRow>
                 ))

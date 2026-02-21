@@ -130,7 +130,7 @@ export default function Maintenance() {
                     <TableCell className="text-muted-foreground">{index + 1}</TableCell>
                     <TableCell className="font-medium text-yellow-400">{log.vehicles?.license_plate}</TableCell>
                     <TableCell>{log.description}</TableCell>
-                    <TableCell className="text-red-400 font-semibold">${log.cost}</TableCell>
+                    <TableCell className="text-red-400 font-semibold">₹{Number(log.cost).toLocaleString('en-IN')}</TableCell>
                     <TableCell>{new Date(log.created_at).toLocaleDateString()}</TableCell>
                   </TableRow>
                 ))
