@@ -3,114 +3,140 @@
 @tailwind utilities;
 
 /* ============================================================
-   FleetFlow — Odoo-style Business Dark Theme
-   Primary #7C3AED · Violet #A78BFA · Green #22C55E
-   Bg #0F172A · Card #1E293B · Text #F1F5F9
+   FleetFlow — Black & Orange Theme
+   Primary #FF6B1F (Orange) · Accent #FFA04D (Light Orange)
+   Bg #0A0A0A (Rich Black) · Card #121212 · Text #F1F5F9
    ============================================================ */
 
 @layer base {
-  :root {
-    /* Odoo Dark */
-    --background: 222 47% 11%;       /* #0F172A */
-    --foreground: 210 40% 96%;       /* #F1F5F9 */
+	:root {
+		/* FleetFlow Black & Orange Theme */
+		--background: 0 0% 4%; /* #0A0A0A Rich Black */
+		--foreground: 210 40% 96%; /* #F1F5F9 */
 
-    --card: 215 32% 17%;             /* #1E293B */
-    --card-foreground: 210 40% 96%;
+		--card: 0 0% 7%; /* #121212 Dark Gray */
+		--card-foreground: 210 40% 96%;
 
-    --popover: 215 32% 15%;
-    --popover-foreground: 210 40% 96%;
+		--popover: 0 0% 6%;
+		--popover-foreground: 210 40% 96%;
 
-    --primary: 263 82% 58%;          /* #7C3AED */
-    --primary-foreground: 0 0% 100%;
+		--primary: 25 95% 53%; /* #FF6B1F Vibrant Orange */
+		--primary-foreground: 0 0% 100%;
 
-    --secondary: 215 28% 22%;
-    --secondary-foreground: 210 30% 82%;
+		--secondary: 0 0% 10%;
+		--secondary-foreground: 210 30% 82%;
 
-    --muted: 215 28% 20%;
-    --muted-foreground: 215 20% 55%;  /* #94A3B8 */
+		--muted: 0 0% 9%;
+		--muted-foreground: 0 0% 55%; /* Neutral Gray */
 
-    --accent: 255 90% 76%;            /* #A78BFA soft violet */
-    --accent-foreground: 222 47% 8%;
+		--accent: 30 90% 60%; /* #FFA04D Light Orange */
+		--accent-foreground: 0 0% 5%;
 
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 0 0% 100%;
+		--destructive: 0 65% 55%;
+		--destructive-foreground: 0 0% 100%;
 
-    --border: 215 25% 27%;            /* #334155 */
-    --input: 215 28% 20%;
-    --ring: 263 82% 58%;
+		--border: 0 0% 12%; /* #1F1F1F Subtle Gray */
+		--input: 0 0% 9%;
+		--ring: 25 95% 53%;
 
-    --radius: 0.5rem;
+		--radius: 0.5rem;
 
-    --sidebar-background: 222 52% 8%;  /* #080F1E */
-    --sidebar-foreground: 210 30% 80%;
-    --sidebar-primary: 255 90% 76%;
-    --sidebar-primary-foreground: 222 47% 8%;
-    --sidebar-accent: 215 32% 14%;
-    --sidebar-accent-foreground: 210 40% 96%;
-    --sidebar-border: 215 30% 18%;
-    --sidebar-ring: 263 82% 58%;
+		--sidebar-background: 0 0% 0%; /* #000000 Pure Black */
+		--sidebar-foreground: 210 30% 80%;
+		--sidebar-primary: 25 95% 53%;
+		--sidebar-primary-foreground: 0 0% 5%;
+		--sidebar-accent: 0 0% 8%;
+		--sidebar-accent-foreground: 210 40% 96%;
+		--sidebar-border: 0 0% 10%;
+		--sidebar-ring: 25 95% 53%;
 
-    --success: 142 71% 45%;           /* #22C55E */
-    --warning: 38 92% 50%;
-    --info: 199 89% 48%;
-  }
+		--success: 142 71% 45%; /* #22C55E */
+		--warning: 38 92% 50%;
+		--info: 199 89% 48%;
+	}
 }
 
 @layer base {
-  * { @apply border-border; }
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', system-ui, sans-serif;
-  }
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground antialiased;
+		font-family: "Inter", system-ui, sans-serif;
+	}
 }
 
 @layer utilities {
-  /* Cards / panels */
-  .glass {
-    background: hsl(215 32% 17%);
-    border: 1px solid hsl(215 25% 27%);
-  }
-  .glass-strong {
-    background: hsl(215 32% 19%);
-    border: 1px solid hsl(215 25% 30%);
-    box-shadow: 0 4px 16px hsl(222 47% 5% / 0.5);
-  }
+	/* Cards / panels */
+	.glass {
+		background: hsl(0 0% 7%);
+		border: 1px solid hsl(0 0% 12%);
+	}
+	.glass-strong {
+		background: hsl(0 0% 9%);
+		border: 1px solid hsl(0 0% 14%);
+		box-shadow: 0 4px 16px hsl(0 0% 0% / 0.5);
+	}
 
-  /* Purple accent borders */
-  .neon-border {
-    border: 1px solid hsl(263 82% 58% / 0.3);
-  }
-  .neon-border-strong {
-    border: 1px solid hsl(263 82% 58% / 0.5);
-    box-shadow: 0 0 0 3px hsl(263 82% 58% / 0.08);
-  }
+	/* Orange accent borders */
+	.neon-border {
+		border: 1px solid hsl(25 95% 53% / 0.3);
+		box-shadow: 0 0 8px hsl(25 95% 53% / 0.15);
+	}
+	.neon-border-strong {
+		border: 1px solid hsl(25 95% 53% / 0.5);
+		box-shadow: 0 0 15px hsl(25 95% 53% / 0.3);
+	}
 
-  .neon-text { color: hsl(255 90% 76%); }
+	.neon-text {
+		color: hsl(25 95% 60%);
+	}
 
-  /* Primary button — Odoo purple */
-  .neon-button {
-    @apply bg-primary text-white font-medium rounded-md transition-all duration-150;
-    box-shadow: 0 1px 3px hsl(263 82% 20% / 0.7);
-  }
-  .neon-button:hover {
-    background: hsl(263 82% 65%);
-    box-shadow: 0 4px 16px hsl(263 82% 58% / 0.35);
-  }
+	/* Primary button — Orange */
+	.neon-button {
+		@apply bg-primary text-white font-medium rounded-md transition-all duration-150;
+		box-shadow: 0 1px 3px hsl(25 95% 20% / 0.7);
+	}
+	.neon-button:hover {
+		background: hsl(25 95% 60%);
+		box-shadow: 0 4px 16px hsl(25 95% 53% / 0.5);
+	}
 
-  /* Status badges */
-  .status-active  { @apply bg-violet-500/15 text-violet-300 border border-violet-500/25 rounded-full px-2.5 py-0.5 text-xs font-medium; }
-  .status-warning { @apply bg-amber-500/15  text-amber-300  border border-amber-500/25  rounded-full px-2.5 py-0.5 text-xs font-medium; }
-  .status-danger  { @apply bg-red-500/15    text-red-300    border border-red-500/25    rounded-full px-2.5 py-0.5 text-xs font-medium; }
-  .status-info    { @apply bg-sky-500/15    text-sky-300    border border-sky-500/25    rounded-full px-2.5 py-0.5 text-xs font-medium; }
-  .status-success { @apply bg-green-500/15  text-green-300  border border-green-500/25  rounded-full px-2.5 py-0.5 text-xs font-medium; }
+	/* Status badges */
+	.status-active {
+		@apply bg-orange-500/15 text-orange-300 border border-orange-500/25 rounded-full px-2.5 py-0.5 text-xs font-medium;
+	}
+	.status-warning {
+		@apply bg-yellow-500/15  text-yellow-300  border border-yellow-500/25  rounded-full px-2.5 py-0.5 text-xs font-medium;
+	}
+	.status-danger {
+		@apply bg-red-500/15    text-red-300    border border-red-500/25    rounded-full px-2.5 py-0.5 text-xs font-medium;
+	}
+	.status-info {
+		@apply bg-sky-500/15    text-sky-300    border border-sky-500/25    rounded-full px-2.5 py-0.5 text-xs font-medium;
+	}
+	.status-success {
+		@apply bg-green-500/15  text-green-300  border border-green-500/25  rounded-full px-2.5 py-0.5 text-xs font-medium;
+	}
 
-  /* Table rows */
-  .table-row-hover { @apply transition-colors duration-100 hover:bg-primary/5; }
+	/* Table rows */
+	.table-row-hover {
+		@apply transition-colors duration-100 hover:bg-primary/5;
+	}
 }
 
 /* Scrollbar */
-::-webkit-scrollbar       { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: hsl(215 25% 32%); border-radius: 99px; }
-::-webkit-scrollbar-thumb:hover { background: hsl(263 82% 65% / 0.6); }
-
+::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: hsl(0 0% 20%);
+	border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: hsl(25 95% 53% / 0.8);
+}
